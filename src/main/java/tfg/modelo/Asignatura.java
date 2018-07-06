@@ -61,11 +61,10 @@ public class Asignatura {
 	@Column(nullable = true)
 	private String nombreJuego;
 	
-	private int activo;
-	
+	private boolean activo;	
 	
 	public Asignatura(){
-		activo = 1;
+		activo = true;
 		alumnosAsignaturas = new HashSet<>();
 		retos = new HashSet<>();
 	}
@@ -111,6 +110,14 @@ public class Asignatura {
 		this.curso = curso;
 	}
 
+	public Variable getVariable() {
+		return variable;
+	}
+
+	public void setVariable(Variable variable) {
+		this.variable = variable;
+	}
+
 	public Set<AlumnoAsignatura> getAlumnosAsignaturas() {
 		return alumnosAsignaturas;
 	}
@@ -142,8 +149,7 @@ public class Asignatura {
 	public void setIdGamificacionJuego(int idGamificacionJuego) {
 		this.idGamificacionJuego = idGamificacionJuego;
 	}
-	
-	
+
 	public int getIdGamificacionGrupo() {
 		return idGamificacionGrupo;
 	}
@@ -151,31 +157,28 @@ public class Asignatura {
 	public void setIdGamificacionGrupo(int idGamificacionGrupo) {
 		this.idGamificacionGrupo = idGamificacionGrupo;
 	}
-	public String getNombreRanking(){
+
+	public String getNombreRanking() {
 		return nombreRanking;
 	}
-	public void setNombreRanking(String nombreRanking){
+
+	public void setNombreRanking(String nombreRanking) {
 		this.nombreRanking = nombreRanking;
 	}
-	public String getNombreJuego(){
+
+	public String getNombreJuego() {
 		return nombreJuego;
 	}
-	public void setNombreJuego(String nombreJuego){
+
+	public void setNombreJuego(String nombreJuego) {
 		this.nombreJuego = nombreJuego;
 	}
-	public Variable getVariable() {
-		return variable;
-	}
 
-	public void setVariable(Variable variable) {
-		this.variable = variable;
-	}
-
-	public int getActivo() {
+	public boolean isActivo() {
 		return activo;
 	}
 
-	public void setActivo(int activo) {
+	public void setActivo(boolean activo) {
 		this.activo = activo;
 	}
 }
