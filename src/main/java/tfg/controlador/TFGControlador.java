@@ -39,6 +39,7 @@ import tfg.modelo.Alumno;
 import tfg.modelo.Asignatura;
 import tfg.modelo.Insignia;
 import tfg.modelo.Profesor;
+import tfg.modelo.Resultado;
 import tfg.modelo.Mensaje;
 import tfg.modelo.Reto;
 import tfg.modelo.Rol;
@@ -46,6 +47,7 @@ import tfg.modelo.Usuario;
 import tfg.modelo.Variable;
 import tfg.servicioAplicacion.SAAlumno;
 import tfg.servicioAplicacion.SAAlumnoAsignatura;
+import tfg.servicioAplicacion.SAAnaliticas;
 import tfg.servicioAplicacion.SAAsignatura;
 import tfg.servicioAplicacion.SAGamificacion;
 import tfg.servicioAplicacion.SAProfesor;
@@ -69,6 +71,8 @@ public class TFGControlador {
 	private SAAlumnoAsignatura saAlumnoAsignatura;
 	@Autowired	
 	private SAGamificacion saGamificacion;
+	@Autowired	
+	private SAAnaliticas saAnaliticas;
 
 	@RequestMapping(value={"/", "/iniciar-sesion"}, method = RequestMethod.GET)
 	public ModelAndView mostrarInicioSesion() throws InvalidFormatException, IOException{
@@ -160,9 +164,8 @@ public class TFGControlador {
 	}
 	
 	@RequestMapping(value = "/asignatura", method = RequestMethod.GET)
-	public ModelAndView mostrarAsignatura(@ModelAttribute("usuario") Usuario usuario,
-			@RequestParam("idAsignatura") int idAsignatura) 
-					throws ClientProtocolException, IOException, ExcepcionPeticionHTTP{
+	public ModelAndView mostrarAsignatura(@ModelAttribute("usuario") Usuario usuario, @RequestParam("idAsignatura") int idAsignatura) 
+			throws ClientProtocolException, IOException, ExcepcionPeticionHTTP{
 		ModelAndView modelAndView = new ModelAndView();
 		Asignatura asignatura = saAsignatura.leerPorId(idAsignatura);
 		List<Alumno> alumnosMatriculados = saAlumno.leerMatriculadosAsignatura(idAsignatura);
@@ -214,10 +217,12 @@ public class TFGControlador {
 		
 		listaInsignias = new ArrayList<>();
 		saGamificacion.cogerAchievement(listaInsignias, asignatura);
+		List<Resultado> resultados = saAnaliticas.obtenerResultados(asignatura);
 		
 		modelAndView.addObject("alumnosMatriculados", dtoAlumnosMatriculados);
 		modelAndView.addObject("alumnosNoMatriculados", saAlumno.leerNoMatriculadosAsignatura(idAsignatura));
 		modelAndView.addObject("retos", dtoRetos);
+		modelAndView.addObject("resultados", resultados);
 		modelAndView.addObject("insignias", listaInsignias);
 		
 		modelAndView.setViewName("asignatura");
@@ -234,7 +239,7 @@ public class TFGControlador {
 			Asignatura asignatura = Asignatura.toAsignatura(dtoAsignatura);
 			asignatura.setProfesor(saProfesor.leer(idProfesor));
 			try {					
-				saGamificacion.crearJuego(asignatura); // Lo guardamos como juego  en el Motor de Gamificación
+				saGamificacion.crearJuego(asignatura); // Lo guardamos como juego  en el Motor de Gamificaciï¿½n
 				saAsignatura.crearAsignatura(asignatura); // Lo guardamos en nuestro sistema
 				Variable variable[] = Variable.values();//Coge todas las variables en un array
 					for (Variable var : variable)  //Crea un Ranking por cada variable que tenemos
@@ -396,17 +401,17 @@ public class TFGControlador {
 		Insignia insignia = Insignia.toInsignia(dtoInsignia);
 		if (!bindingResult.hasErrors()) {
 			try {					
-				saGamificacion.crearAchievement(insignia, asignatura); // Lo guardamos en el Motor de Gamificación
+				saGamificacion.crearAchievement(insignia, asignatura); // Lo guardamos en el Motor de Gamificaciï¿½n
 			} catch (Exception e) {
 				Mensaje mensaje = new Mensaje("Error", "No se ha podido crear correctamente el insignia " +
-						insignia.getNombre() + ". Operación cancelada", "rojo");
+						insignia.getNombre() + ". Operaciï¿½n cancelada", "rojo");
 				
 				mensaje.setIcono("block");
 				redirectAttrs.addFlashAttribute("mensaje", mensaje);
 				return new ModelAndView("redirect:/asignatura?idAsignatura=" + asignatura.getId());
 			}
 			
-			Mensaje mensaje = new Mensaje("Enhorabuena", "se ha añadido la insignia '" + insignia.getNombre() +
+			Mensaje mensaje = new Mensaje("Enhorabuena", "se ha aï¿½adido la insignia '" + insignia.getNombre() +
 					"' a la asignatura " + asignatura.getNombre(), "verde");
 			mensaje.setIcono("check_circle");
 			redirectAttrs.addFlashAttribute("mensaje", mensaje);

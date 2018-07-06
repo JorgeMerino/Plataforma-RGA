@@ -1,6 +1,7 @@
 package tfg.modelo;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.http.HttpResponse;
@@ -35,12 +36,14 @@ public class GestorPeticionHTTP {
 
 	public GestorPeticionHTTP(String url){
 		this.url = url;
+		parametros = new HashMap<>();
+		cabeceras = new HashMap<>();
 	}
 	
-	//public GestorPeticionHTTP(String url, Map<String, String> parametros){
 	public GestorPeticionHTTP(String url, Map<String, Object> parametros){
 		this.url = url;
 		this.parametros = parametros;
+		cabeceras = new HashMap<>();
 	}
 	
 	public void ejecutar() throws ClientProtocolException, IOException, ExcepcionPeticionHTTP {
@@ -129,21 +132,6 @@ public class GestorPeticionHTTP {
 	public void setCabeceras(Map<String, Object> cabeceras) {
 		this.cabeceras = cabeceras;
 	}
-	/*public Map<String, String> getParametros() {
-		return parametros;
-	}
-
-	public void setParametros(Map<String, String> parametros) {
-		this.parametros = parametros;
-	}
-
-	public Map<String, String> getCabeceras() {
-		return cabeceras;
-	}
-
-	public void setCabeceras(Map<String, String> cabeceras) {
-		this.cabeceras = cabeceras;
-	}*/
 
 	public HttpResponse getRespuesta() {
 		return respuesta;
