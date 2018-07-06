@@ -1,6 +1,7 @@
 package tfg.controlador;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -189,8 +190,10 @@ public class TFGControlador {
 				saGamificacion.cogerRankingVersionMejorada(asignatura, var, alumno);
 				if(var == Variable.Puntuacion)
 					dtoAlumno.setPuntuacion(alumno.getValor());
-				else if(var == Variable.TiempoMedio)
-					dtoAlumno.setTiempomedio(alumno.getValor());
+				else if(var == Variable.TiempoMedio){
+					DecimalFormat df = new DecimalFormat("0.000");
+					dtoAlumno.setTiempomedio( df.format((float)alumno.getValor() / 1000));
+				}
 				else if(var == Variable.PorcentajeAciertos)
 					dtoAlumno.setPorcentaje(alumno.getValor());
 				alumno.setValor(0);
