@@ -23,30 +23,30 @@ import org.hibernate.validator.constraints.NotEmpty;
 public abstract class Usuario {	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
-	private int id;
+	protected int id;
 	
 	@NotEmpty
-	private String nombre;
+	protected String nombre;
 	
 	@NotEmpty
-	private String apellidos;
+	protected String apellidos;
 	
 	@Column(nullable=false)
-	private Rol rol;
+	protected Rol rol;
 	
 	@Email
 	@NotEmpty
 	@Column(unique=true)
-	private String email;
+	protected String email;
 	
 	@Length(min = 6)
 	@NotEmpty
-	private String password;
+	protected String password;
 	
 	@NotEmpty
-	private String token;
+	protected String token;
 	
-	private boolean activo;
+	protected boolean activo;
 	
 	public Usuario (){
 		token = generarToken();
