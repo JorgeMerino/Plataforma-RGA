@@ -1,6 +1,11 @@
 package tfg.excepcion;
 
 public class ExcepcionPeticionHTTP extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	
 	private int codigoEstadoPeticion;
 	
 	public ExcepcionPeticionHTTP(int codigoEstadoPeticion) {

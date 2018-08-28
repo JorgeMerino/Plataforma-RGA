@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 
 import tfg.excepcion.ExcepcionPeticionHTTP;
 import tfg.modelo.Alumno;
@@ -19,8 +18,7 @@ import tfg.modelo.Asignatura;
 import tfg.modelo.GestorPeticionHTTP;
 import tfg.modelo.Resultado;
 import tfg.modelo.Reto;
-import tfg.repositorio.RepositorioAlumno;
-import tfg.repositorio.RepositorioAsignatura;
+import tfg.repositorio.RepositorioUsuario;
 
 @Service("saAnaliticas")
 public class SAAnaliticasImp implements SAAnaliticas{
@@ -28,7 +26,7 @@ public class SAAnaliticasImp implements SAAnaliticas{
 	public static final String baseUrl = "http://localhost:8000/api";
 	
 	@Autowired
-	private RepositorioAlumno repositorioAlumno;
+	private RepositorioUsuario repositorioUsuario;
 
 	@Override
 	public List<Resultado> obtenerResultados(Asignatura asignatura) throws ClientProtocolException, IOException, ExcepcionPeticionHTTP {
@@ -56,7 +54,7 @@ public class SAAnaliticasImp implements SAAnaliticas{
 				puntos = jsonUsuario.get("puntos").getAsInt();
 				porcentajeAciertos = jsonUsuario.get("porcentajeAciertos").getAsInt();
 				
-				Alumno alumno = repositorioAlumno.findById(idUsuario);
+				Alumno alumno = (Alumno) repositorioUsuario.findById(idUsuario);
 
 				for(int j = 0; j < jsonPreguntas.size(); j++) {
 					jsonPregunta = jsonPreguntas.get(j).getAsJsonObject();

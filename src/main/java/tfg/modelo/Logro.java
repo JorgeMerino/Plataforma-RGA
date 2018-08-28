@@ -13,8 +13,6 @@ import javax.persistence.Table;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import tfg.dto.DTOLogro;
-import tfg.dto.DTOReto;
-import tfg.servicioAplicacion.SARetoImp;
 
 @Entity
 @Table(name = "logros")
@@ -35,16 +33,12 @@ public class Logro {
 	
 	@Column(nullable = false)
 	private int idGamificacion;
-	
-	
-	
+		
 	public Logro() {
 		this.id = id;
 		this.nombre = nombre;
 	}
 	
-
-
 	public static Logro toLogro(DTOLogro dtoLogro) {
 		Logro logro = new Logro();
 		logro.setNombre(dtoLogro.getNombre());
@@ -53,7 +47,6 @@ public class Logro {
 		return logro;
 	}
 	
-
 	public int getId() {
 		return id;
 	}
@@ -104,6 +97,7 @@ public class Logro {
 	public String getDescripcion() {
 		return descripcion;
 	}
+	
 	public void setDescripcion(String descripcion) {
 		this.descripcion = descripcion;
 	}

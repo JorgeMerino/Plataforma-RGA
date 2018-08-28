@@ -6,15 +6,13 @@ import tfg.modelo.Asignatura;
 import tfg.modelo.Logro;
 
 public class DTOLogro {
-private int id;
-	
+	private int id;	
 	@NotEmpty(message = "* Por favor, introduzca el nombre")
 	private String nombre;
 	private String variable;
 	private String descripcion;
 	private int valor;
 	private Asignatura asignatura;
-	
 	
 	public static DTOLogro toDTOLogro(Logro Logro) {
 		DTOLogro dtoLogro = new DTOLogro();
@@ -33,33 +31,37 @@ private int id;
 	public void setId(int id) {
 		this.id = id;
 	}
-	
-	public int getValor() {
-		return valor;
-	}
 
-	public void setValor(int valor) {
-		this.valor = valor;
-	}
-	
-	public String getVariable(){
-		return variable;
-	}
-	public void setVariable(String Variable){
-		this.variable = variable;
-	}
-	public String getDescripcion(){
-		return descripcion;
-	}
-	public void setDescripcion(String Descripcion){
-		this.descripcion = descripcion;
-	}
 	public String getNombre() {
 		return nombre;
 	}
 
 	public void setNombre(String nombre) {
 		this.nombre = nombre;
+	}
+
+	public String getVariable() {
+		return variable;
+	}
+
+	public void setVariable(String variable) {
+		this.variable = variable;
+	}
+
+	public String getDescripcion() {
+		return descripcion;
+	}
+
+	public void setDescripcion(String descripcion) {
+		this.descripcion = descripcion;
+	}
+
+	public int getValor() {
+		return valor;
+	}
+
+	public void setValor(int valor) {
+		this.valor = valor;
 	}
 
 	public Asignatura getAsignatura() {

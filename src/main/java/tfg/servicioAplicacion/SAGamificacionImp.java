@@ -27,13 +27,14 @@ import tfg.modelo.GestorPeticionHTTP;
 import tfg.modelo.Insignia;
 import tfg.modelo.Reto;
 import tfg.modelo.Variable;
+import tfg.repositorio.RepositorioUsuario;
 
 @Service("saGamificacion")
 public class SAGamificacionImp implements SAGamificacion{
 	public static final String baseUrl = "http://localhost:8081";
 	
 	@Autowired
-	private SAAlumno saAlumno;
+	private RepositorioUsuario repositorioUsuario;
 	
 	private String apiVersion = "1.0.0";
 	private String autorizacion;
@@ -472,7 +473,7 @@ public class SAGamificacionImp implements SAGamificacion{
 			puntos = jsonUsuario.get("puntos").getAsInt();
 			porcentajeAciertos = jsonUsuario.get("porcentajeAciertos").getAsInt();
 			
-			Alumno alumno = saAlumno.leer(idUsuario);
+			Alumno alumno = (Alumno) repositorioUsuario.findById(idUsuario);
 			mandarResultado(reto, alumno, "TiempoMedio", tiempoMedio);
 			mandarResultado(reto, alumno, "Puntuacion", puntos);
 			mandarResultado(reto, alumno, "PorcentajeAciertos", porcentajeAciertos);
