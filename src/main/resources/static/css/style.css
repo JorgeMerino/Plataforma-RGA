@@ -117,6 +117,10 @@ table a:hover{
 	text-decoration: none;
 }
 
+div#analiticas{
+	background: #212529;
+}
+
 i{
 	vertical-align: middle;
 	margin: 0px 5px 5px 5px;

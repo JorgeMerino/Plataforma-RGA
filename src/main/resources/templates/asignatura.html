@@ -45,6 +45,12 @@
 			<table th:replace="fragments/tablas :: tablaAlumnos"></table>
 		  </div>
 		  <div class="tab-pane fade" id="analiticas" role="tabpanel" aria-labelledby="analiticas-tab">
+		  	<div class="btn-group" role="group" aria-label="Basic example">
+			  <button type="button" class="btn btn-naranja">Tabla de resultados</button>
+			  <button type="button" class="btn btn-naranja">Diagrama de barras</button>
+			</div>
+			<canvas id="diagramaLineas"></canvas>
+			<canvas id="diagramaBarras"></canvas>
 			<table th:replace="fragments/tablas :: tablaAnaliticas"></table>
 		  </div>
 		  <div class="tab-pane fade" id="insignias" role="tabpanel" aria-labelledby="insignias-tab">
@@ -63,6 +69,137 @@
 	<div th:replace="fragments/modals :: modalNuevaInsignia"></div>
 	
 	<!-- Optional JavaScript -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+	
+	
+	<script th:inline="javascript">
+	/*<![CDATA[*/
+		var resultados = /*[[${resultados}]]*/; //Extrae los resultados desde Thymeleaf
+		var diccAlumnos = generarDiccionario();
+		var colores = ["#D32F2F", "#1976D2", "#388E3C", "#FBC02D", "#F57C00", "#C2185B", "#512DA8", "#0097A7", "#6D4C41", "#616161"];
+		var reto = "Prueba Inicial";
+		
+		Chart.defaults.global.defaultFontColor = "white";	
+		var ctxLineas = document.getElementById("diagramaLineas").getContext('2d');
+		var ctxBarras = document.getElementById("diagramaBarras").getContext('2d');		
+		var diagramaLineas = generarDiagrama("line", ctxLineas);
+		var diagramaBarras = generarDiagrama("bar", ctxBarras);
+		
+		function generarDiccionario(){
+			var diccAlumnos = new Map();
+			//Para cada resultado lo añade a un diccionario con alumno como clave
+			resultados.forEach(function(fila) {
+				if(!diccAlumnos.has(fila.alumno)){
+					diccAlumnos.set(fila.alumno, {
+						correctos: [fila.correcta],
+						preguntas: [fila.pregunta],
+						respuestas: [fila.respuesta],
+						tiempos: [fila.tiempo],
+						tiemposAcumulados: [fila.tiempo]
+					});
+				}
+				else{
+					var ultimoTiempoAcumulado = diccAlumnos.get(fila.alumno).tiemposAcumulados[diccAlumnos.get(fila.alumno).tiemposAcumulados.length - 1];
+					var correctos = diccAlumnos.get(fila.alumno).correctos;
+					correctos.push(fila.correcta);
+					var preguntas = diccAlumnos.get(fila.alumno).preguntas;
+					preguntas.push(fila.pregunta);
+					var respuestas = diccAlumnos.get(fila.alumno).respuestas;
+					respuestas.push(fila.respuesta);
+					var tiempos = diccAlumnos.get(fila.alumno).tiempos;
+					tiempos.push(fila.tiempo);
+					var tiemposAcumulados = diccAlumnos.get(fila.alumno).tiemposAcumulados;
+					tiemposAcumulados.push(ultimoTiempoAcumulado + fila.tiempo);
+					
+					diccAlumnos.set(fila.alumno, {
+						correctos: correctos,
+						preguntas: preguntas,
+						respuestas: respuestas,
+						tiempos: tiempos,
+						tiemposAcumulados: tiemposAcumulados
+					});
+				}
+			});
+			
+			return diccAlumnos;
+		}		
+		
+		function obtenerLabels(){
+			labels = new Array();
+			for (i = 0; i < resultados.length/diccAlumnos.size; i++) {
+				labels.push("Pregunta ".concat(i + 1));				
+			}
+			return labels;
+		}
+		
+		function obtenerColor(indice){
+			if(indice < colores.length)
+				return colores[indice];
+			else
+				return Math.floor(Math.random() * (colores.length));
+		}
+		
+		function generarDiagrama(tipo, ctx){
+			return new Chart(ctx, {
+				type: tipo,
+				data: {
+					labels: obtenerLabels(),
+					datasets: Array.from(diccAlumnos).map(function (elemento, indice){
+						color = obtenerColor(indice);
+						return {
+							label: elemento[0],
+							backgroundColor: color,
+							borderColor: color,
+							data: tipo == "line" ? elemento[1].tiemposAcumulados : elemento[1].tiempos,
+							fill: false
+						};
+					})
+				},
+				options: {
+					scales: {
+						yAxes: [{
+							ticks: {
+								beginAtZero:true,
+							},
+							gridLines: {
+							  color: "#32383e"
+							}
+						}],
+						xAxes: [{
+							gridLines: {
+							  color: "#32383e"
+							}
+						}],
+					},
+					tooltips: {
+						callbacks: {
+							label: function(tooltipItem, data) {
+								var label = data.datasets[tooltipItem.datasetIndex].label || '';
+		
+								if (label) {
+									label += ': ';
+								}
+								label += tooltipItem.yLabel + " segundos totales";
+								return label;
+							},
+							footer: function(tooltipItems, data) {
+								idUsuario = tooltipItems[0].datasetIndex; //Usuario
+								idPregunta = tooltipItems[0].index; //Pregunta
+								console.log(Array.from(diccAlumnos)[idUsuario]);
+								var footer = ["Pegunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta],
+											  "Respuesta: " + Array.from(diccAlumnos)[idUsuario][1].respuestas[idPregunta],
+											  "Correcta: " + (Array.from(diccAlumnos)[idUsuario][1].correctos[idPregunta] === true ? "Sí" : "No"),
+											  "Tiempo de respuesta: " + Array.from(diccAlumnos)[idUsuario][1].tiempos[idPregunta] + " segundos"];
+								return footer;
+							}
+						},
+						footerFontStyle: "normal"
+					}
+				}
+			});
+		}
+	/*]]>*/
+	</script>
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script src="//code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
