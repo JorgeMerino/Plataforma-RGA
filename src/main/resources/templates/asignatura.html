@@ -45,10 +45,21 @@
 			<table th:replace="fragments/tablas :: tablaAlumnos"></table>
 		  </div>
 		  <div class="tab-pane fade" id="analiticas" role="tabpanel" aria-labelledby="analiticas-tab">
-		    <form class="col-8 mx-auto pt-4">
-			  <div class="form-group row">
-			    <label for="diagramasSelect" class="col-sm-2 col-form-label" style="color: white;">Mostrar: </label>
-			    <div class="col-sm-10">
+		    <form class="col-11 mx-auto pt-4 form-inline" style="text-align: center">
+			  <div class="form-group col-6">
+			    <label for="retosSelect" class="col-2 col-form-label" style="color: white;">Reto: </label>
+			    <div class="col-10">
+				    <select class="form-control" id="retosSelect">
+				      <option>Gráfico de líneas de tiempo acumulado</option>
+				      <option>Gráfico de barras de tiempo de respuesta</option>
+				      <option>Gráfico de barras de aciertos</option>
+				      <option>Tabla de contenido de resultados</option>
+				    </select>
+				</div>
+			  </div>
+			  <div class="form-group col-6">
+			    <label for="diagramasSelect" class="col-2 col-form-label" style="color: white;">Mostrar: </label>
+			    <div class="col-10">
 				    <select class="form-control" id="diagramasSelect">
 				      <option>Gráfico de líneas de tiempo acumulado</option>
 				      <option>Gráfico de barras de tiempo de respuesta</option>
