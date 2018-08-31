@@ -121,6 +121,16 @@ div#analiticas{
 	background: #212529;
 }
 
+.contenedor-graficos{
+	padding: 2% 3%;
+	text-align: center;
+}
+
+.contenedor-graficos h2{
+	margin-bottom: 1%;
+	color: white;
+}
+
 i{
 	vertical-align: middle;
 	margin: 0px 5px 5px 5px;

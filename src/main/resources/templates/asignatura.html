@@ -45,14 +45,35 @@
 			<table th:replace="fragments/tablas :: tablaAlumnos"></table>
 		  </div>
 		  <div class="tab-pane fade" id="analiticas" role="tabpanel" aria-labelledby="analiticas-tab">
-		  	<div class="btn-group" role="group" aria-label="Basic example">
-			  <button type="button" class="btn btn-naranja">Tabla de resultados</button>
-			  <button type="button" class="btn btn-naranja">Diagrama de barras</button>
-			</div>
-			<canvas id="diagramaTiempoLineas"></canvas>
-			<canvas id="diagramaTiempoBarras"></canvas>
-			<canvas id="diagramaAciertosBarras"></canvas>
-			<table th:replace="fragments/tablas :: tablaAnaliticas"></table>
+		    <form class="col-8 mx-auto pt-4">
+			  <div class="form-group row">
+			    <label for="diagramasSelect" class="col-sm-2 col-form-label" style="color: white;">Mostrar: </label>
+			    <div class="col-sm-10">
+				    <select class="form-control" id="diagramasSelect">
+				      <option>Gráfico de líneas de tiempo acumulado</option>
+				      <option>Gráfico de barras de tiempo de respuesta</option>
+				      <option>Gráfico de barras de aciertos</option>
+				      <option>Tabla de contenido de resultados</option>
+				    </select>
+				</div>
+			  </div>
+		    </form>
+		    <div class="contenedor-graficos">
+		    	<h2>Gráfico de líneas de tiempo acumulado</h2>
+		    	<canvas id="diagramaTiempoLineas"></canvas>
+		    </div>
+		    <div class="contenedor-graficos">
+		    	<h2>Gráfico de barras de tiempo de respuesta</h2>
+		    	<canvas id="diagramaTiempoBarras"></canvas>
+		    </div>
+		    <div class="contenedor-graficos">
+		    	<h2>Gráfico de barras de aciertos</h2>
+		    	<canvas id="diagramaAciertosBarras"></canvas>
+		    </div>			
+			<div  class="contenedor-graficos" id="tablaResultados">
+				<h2>Tabla de contenido de resultados</h2>
+				<table th:replace="fragments/tablas :: tablaAnaliticas"></table>
+			</div>			
 		  </div>
 		  <div class="tab-pane fade" id="insignias" role="tabpanel" aria-labelledby="insignias-tab">
 			<table th:replace="fragments/tablas :: tablaInsignias"></table>
@@ -71,7 +92,45 @@
 	
 	<!-- Optional JavaScript -->
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+	<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="//code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 	
+	<script>
+		$(document).ready(function(){
+			$("#diagramaTiempoLineas").parent().show();
+			$("#diagramaTiempoBarras").parent().hide();
+			$("#diagramaAciertosBarras").parent().hide();
+			$("#tablaResultados").hide();
+			$("#diagramasSelect").change(function(){
+			    if($(this).val() == "Gráfico de líneas de tiempo acumulado"){
+			    	$("#diagramaTiempoLineas").parent().show();
+					$("#diagramaTiempoBarras").parent().hide();
+					$("#diagramaAciertosBarras").parent().hide();
+					$("#tablaResultados").hide();
+			    }
+			    else if($(this).val() == "Gráfico de barras de tiempo de respuesta"){
+			    	$("#diagramaTiempoLineas").parent().hide();
+					$("#diagramaTiempoBarras").parent().show();
+					$("#diagramaAciertosBarras").parent().hide();
+					$("#tablaResultados").hide();
+			    }
+			    else if($(this).val() == "Gráfico de barras de aciertos"){
+			    	$("#diagramaTiempoLineas").parent().hide();
+					$("#diagramaTiempoBarras").parent().hide();
+					$("#diagramaAciertosBarras").parent().show();
+					$("#tablaResultados").hide();
+			    }
+			    else if($(this).val() == "Tabla de contenido de resultados"){
+			    	$("#diagramaTiempoLineas").parent().hide();
+					$("#diagramaTiempoBarras").parent().hide();
+					$("#diagramaAciertosBarras").parent().hide();
+					$("#tablaResultados").show();
+			    }
+			});
+		});
+	</script>
 	
 	<script th:inline="javascript">
 	/*<![CDATA[*/
@@ -86,6 +145,7 @@
 		var ctxAciertosBarras = document.getElementById("diagramaAciertosBarras").getContext('2d');
 		var diagramaTiempoLineas = generarDiagrama("line", ctxTiempoLineas);
 		var diagramaTiempoBarras = generarDiagrama("bar", ctxTiempoBarras);
+		var diagramaAciertosBarras = generarDiagramaBarrasApilado(ctxAciertosBarras);
 		
 		function generarDiccionario(){
 			var diccAlumnos = new Map();
@@ -207,7 +267,7 @@
 							footer: function(tooltipItems, data) {
 								idUsuario = tooltipItems[0].datasetIndex; //Usuario
 								idPregunta = tooltipItems[0].index; //Pregunta
-								var footer = ["Pegunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta],
+								var footer = ["Pregunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta],
 											  "Respuesta: " + Array.from(diccAlumnos)[idUsuario][1].respuestas[idPregunta],
 											  "Correcta: " + (Array.from(diccAlumnos)[idUsuario][1].aciertos[idPregunta] === true ? "Sí" : "No"),
 											  "Tiempo de respuesta: " + Array.from(diccAlumnos)[idUsuario][1].tiempos[idPregunta] + " segundos"];
@@ -220,68 +280,72 @@
 			});
 		}
 		
-		var listaPorcentajeAciertosPregunta = obtenerPorcentajeAciertosPregunta();
-		
-		var diagramaAciertosBarras = new Chart(ctxAciertosBarras, {
-			type: 'bar',
-			data: {
-				labels: obtenerLabels(),
-				datasets: [{
-					label: 'Correcta',
-					backgroundColor: "#388E3C",
-					data: listaPorcentajeAciertosPregunta
-				}, {
-					label: 'Incorrecta',
-					backgroundColor: "#D32F2F",
-					data: listaPorcentajeAciertosPregunta.map(function (elemento){
-						return 100 - elemento;
-					})
-				}]
-			},
-			options: {
-				tooltips: {
-					mode: 'index',
-					intersect: false,
-					callbacks: {
-						label: function(tooltipItem, data) {
-							var label = data.datasets[tooltipItem.datasetIndex].label || '';
-	
-							if (label) {
-								label += ': ';
-							}
-							label += tooltipItem.yLabel + " %";
-							return label;
-						},
-						footer: function(tooltipItems, data) {
-							idUsuario = tooltipItems[0].datasetIndex; //Usuario
-							idPregunta = tooltipItems[0].index; //Pregunta
-							var footer = ["Pegunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta]];
-							return footer;
-						}
-					},
-					footerFontStyle: "normal"
-				},
-				responsive: true,
-				scales: {
-					xAxes: [{
-						stacked: true
-					}],
-					yAxes: [{
-						stacked: true,
-						scaleLabel: {
-							display: true,
-							labelString: 'Aciertos por pregunta (%)'
-						}
+		function generarDiagramaBarrasApilado(ctx){
+			var listaPorcentajeAciertosPregunta = obtenerPorcentajeAciertosPregunta();
+			
+			return new Chart(ctx, {
+				type: 'bar',
+				data: {
+					labels: obtenerLabels(),
+					datasets: [{
+						label: 'Correcta',
+						backgroundColor: "#388E3C",
+						data: listaPorcentajeAciertosPregunta
+					}, {
+						label: 'Incorrecta',
+						backgroundColor: "#D32F2F",
+						data: listaPorcentajeAciertosPregunta.map(function (elemento){
+							return 100 - elemento;
+						})
 					}]
+				},
+				options: {
+					tooltips: {
+						mode: 'index',
+						intersect: false,
+						callbacks: {
+							label: function(tooltipItem, data) {
+								var label = data.datasets[tooltipItem.datasetIndex].label || '';
+		
+								if (label) {
+									label += ': ';
+								}
+								label += tooltipItem.yLabel + " %";
+								return label;
+							},
+							footer: function(tooltipItems, data) {
+								idUsuario = tooltipItems[0].datasetIndex; //Usuario
+								idPregunta = tooltipItems[0].index; //Pregunta
+								var footer = ["Pregunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta]];
+								return footer;
+							}
+						},
+						footerFontStyle: "normal"
+					},
+					responsive: true,
+					scales: {
+						xAxes: [{
+							stacked: true,
+							gridLines: {
+								color: "#32383e"
+							}
+						}],
+						yAxes: [{
+							stacked: true,
+							gridLines: {
+								color: "#32383e"
+							},
+							scaleLabel: {
+								display: true,
+								labelString: 'Aciertos por pregunta (%)'
+							}
+						}]
+					}
 				}
-			}
-		});
+			});			
+		}		
 	/*]]>*/
-	</script>
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="//code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>    
+	</script>    
   </div>
   </body>
 </html>
