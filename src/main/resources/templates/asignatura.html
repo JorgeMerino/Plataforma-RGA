@@ -45,15 +45,11 @@
 			<table th:replace="fragments/tablas :: tablaAlumnos"></table>
 		  </div>
 		  <div class="tab-pane fade" id="analiticas" role="tabpanel" aria-labelledby="analiticas-tab">
-		    <form class="col-11 mx-auto pt-4 form-inline" style="text-align: center">
+		    <form class="col-11 mx-auto pt-4 form-inline formulario-diagramas" style="text-align: center">
 			  <div class="form-group col-6">
 			    <label for="retosSelect" class="col-2 col-form-label" style="color: white;">Reto: </label>
 			    <div class="col-10">
 				    <select class="form-control" id="retosSelect">
-				      <option>Gráfico de líneas de tiempo acumulado</option>
-				      <option>Gráfico de barras de tiempo de respuesta</option>
-				      <option>Gráfico de barras de aciertos</option>
-				      <option>Tabla de contenido de resultados</option>
 				    </select>
 				</div>
 			  </div>
@@ -107,254 +103,298 @@
     <script src="//code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-	
-	<script>
-		$(document).ready(function(){
-			$("#diagramaTiempoLineas").parent().show();
-			$("#diagramaTiempoBarras").parent().hide();
-			$("#diagramaAciertosBarras").parent().hide();
-			$("#tablaResultados").hide();
-			$("#diagramasSelect").change(function(){
-			    if($(this).val() == "Gráfico de líneas de tiempo acumulado"){
-			    	$("#diagramaTiempoLineas").parent().show();
-					$("#diagramaTiempoBarras").parent().hide();
-					$("#diagramaAciertosBarras").parent().hide();
-					$("#tablaResultados").hide();
-			    }
-			    else if($(this).val() == "Gráfico de barras de tiempo de respuesta"){
-			    	$("#diagramaTiempoLineas").parent().hide();
-					$("#diagramaTiempoBarras").parent().show();
-					$("#diagramaAciertosBarras").parent().hide();
-					$("#tablaResultados").hide();
-			    }
-			    else if($(this).val() == "Gráfico de barras de aciertos"){
-			    	$("#diagramaTiempoLineas").parent().hide();
-					$("#diagramaTiempoBarras").parent().hide();
-					$("#diagramaAciertosBarras").parent().show();
-					$("#tablaResultados").hide();
-			    }
-			    else if($(this).val() == "Tabla de contenido de resultados"){
-			    	$("#diagramaTiempoLineas").parent().hide();
-					$("#diagramaTiempoBarras").parent().hide();
-					$("#diagramaAciertosBarras").parent().hide();
-					$("#tablaResultados").show();
-			    }
-			});
-		});
-	</script>
-	
+		
 	<script th:inline="javascript">
 	/*<![CDATA[*/
-		var resultados = /*[[${resultados}]]*/; //Extrae los resultados desde Thymeleaf
-		var diccAlumnos = generarDiccionario();
-		var colores = ["#D32F2F", "#1976D2", "#388E3C", "#FBC02D", "#F57C00", "#C2185B", "#512DA8", "#0097A7", "#6D4C41", "#616161"];
-		var reto = "Prueba Inicial";
-		
-		Chart.defaults.global.defaultFontColor = "white";	
-		var ctxTiempoLineas = document.getElementById("diagramaTiempoLineas").getContext('2d');
-		var ctxTiempoBarras = document.getElementById("diagramaTiempoBarras").getContext('2d');
-		var ctxAciertosBarras = document.getElementById("diagramaAciertosBarras").getContext('2d');
-		var diagramaTiempoLineas = generarDiagrama("line", ctxTiempoLineas);
-		var diagramaTiempoBarras = generarDiagrama("bar", ctxTiempoBarras);
-		var diagramaAciertosBarras = generarDiagramaBarrasApilado(ctxAciertosBarras);
-		
-		function generarDiccionario(){
-			var diccAlumnos = new Map();
-			//Para cada resultado lo añade a un diccionario con alumno como clave
-			resultados.forEach(function(fila) {
-				if(!diccAlumnos.has(fila.alumno)){
-					diccAlumnos.set(fila.alumno, {
-						aciertos: [fila.correcta],
-						preguntas: [fila.pregunta],
-						respuestas: [fila.respuesta],
-						tiempos: [fila.tiempo],
-						tiemposAcumulados: [fila.tiempo]
-					});
-				}
-				else{
-					var ultimoTiempoAcumulado = diccAlumnos.get(fila.alumno).tiemposAcumulados[diccAlumnos.get(fila.alumno).tiemposAcumulados.length - 1];
-					var aciertos = diccAlumnos.get(fila.alumno).aciertos;
-					aciertos.push(fila.correcta);
-					var preguntas = diccAlumnos.get(fila.alumno).preguntas;
-					preguntas.push(fila.pregunta);
-					var respuestas = diccAlumnos.get(fila.alumno).respuestas;
-					respuestas.push(fila.respuesta);
-					var tiempos = diccAlumnos.get(fila.alumno).tiempos;
-					tiempos.push(fila.tiempo);
-					var tiemposAcumulados = diccAlumnos.get(fila.alumno).tiemposAcumulados;
-					tiemposAcumulados.push(ultimoTiempoAcumulado + fila.tiempo);
-					
-					diccAlumnos.set(fila.alumno, {
-						aciertos: aciertos,
-						preguntas: preguntas,
-						respuestas: respuestas,
-						tiempos: tiempos,
-						tiemposAcumulados: tiemposAcumulados
-					});
-				}
+		$(document).ready(function(){
+			var conjuntoRetos = generarConjuntoRetos();
+			var reto = "";
+			if(conjuntoRetos.size != 0){
+				reto = Array.from(conjuntoRetos)[0];
+			}			
+			
+			var resultados = generarResultados(reto);
+			var diccAlumnos = generarDiccionarioAlumnos();
+			var colores = ["#D32F2F", "#1976D2", "#388E3C", "#FBC02D", "#F57C00", "#C2185B", "#512DA8", "#0097A7", "#6D4C41", "#616161"];			
+			
+			Chart.defaults.global.defaultFontColor = "white";	
+			var ctxTiempoLineas = document.getElementById("diagramaTiempoLineas").getContext('2d');
+			var ctxTiempoBarras = document.getElementById("diagramaTiempoBarras").getContext('2d');
+			var ctxAciertosBarras = document.getElementById("diagramaAciertosBarras").getContext('2d');
+			var diagramaTiempoLineas = generarDiagrama("line", ctxTiempoLineas);
+			var diagramaTiempoBarras = generarDiagrama("bar", ctxTiempoBarras);
+			var diagramaAciertosBarras = generarDiagramaBarrasApilado(ctxAciertosBarras);
+			prepararGraficos();
+			
+			$("#retosSelect").change(function(){
+				reto = $(this).val();
+				
+				resultados = generarResultados(reto);
+				diccAlumnos = generarDiccionarioAlumnos();
+				
+				diagramaTiempoLineas = generarDiagrama("line", ctxTiempoLineas);
+				diagramaTiempoBarras = generarDiagrama("bar", ctxTiempoBarras);
+				diagramaAciertosBarras = generarDiagramaBarrasApilado(ctxAciertosBarras);
 			});
 			
-			return diccAlumnos;
-		}		
-		
-		function obtenerLabels(){
-			labels = new Array();
-			for (i = 0; i < resultados.length/diccAlumnos.size; i++) {
-				labels.push("Pregunta ".concat(i + 1));				
-			}
-			return labels;
-		}
-		
-		function obtenerColor(indice){
-			if(indice < colores.length)
-				return colores[indice];
-			else
-				return Math.floor(Math.random() * (colores.length));
-		}
-		
-		function  obtenerPorcentajeAciertosPregunta(){
-			var listaPorcentajeAciertosPregunta = new Array();
-			var contadorAciertos;
-			var numeroPreguntas = resultados.length/diccAlumnos.size;
-			for (i = 0; i < numeroPreguntas; i++) {
-				contadorAciertos = 0;
-				Array.from(diccAlumnos).forEach(function (elemento, indice){
-					contadorAciertos += (elemento[1].aciertos[i] === true ? 1 : 0);					
+			
+			function generarResultados(reto){
+				var resultados = /*[[${resultados}]]*/; //Extrae los resultados desde Thymeleaf
+				return resultados.map(function(fila){
+					if(fila.reto == reto)
+						return fila;
 				});
-				listaPorcentajeAciertosPregunta.push((contadorAciertos / diccAlumnos.size * 100).toFixed(2));
 			}
-			return listaPorcentajeAciertosPregunta;
-		}
-		
-		function generarDiagrama(tipo, ctx){
-			return new Chart(ctx, {
-				type: tipo,
-				data: {
-					labels: obtenerLabels(),
-					datasets: Array.from(diccAlumnos).map(function (elemento, indice){
-						color = obtenerColor(indice);
-						return {
-							label: elemento[0],
-							backgroundColor: color,
-							borderColor: color,
-							data: tipo == "line" ? elemento[1].tiemposAcumulados : elemento[1].tiempos,
-							fill: false
-						};
-					})
-				},
-				options: {
-					scales: {
-						yAxes: [{
-							ticks: {
-								beginAtZero:true,
-							},
-							gridLines: {
-							  color: "#32383e"
-							},
-							scaleLabel: {
-								display: true,
-								labelString: 'Tiempo de respuesta (segundos)'
-							}
-						}],
-						xAxes: [{
-							gridLines: {
-							  color: "#32383e"
-							}
-						}],
+			
+			function generarConjuntoRetos(){
+				var conjuntoRetos = new Set();
+				var resultados = /*[[${resultados}]]*/; //Extrae los resultados desde Thymeleaf
+				//Para cada resultado lo añade a un conjunto con el reto como clave
+				resultados.forEach(function(fila) {
+					conjuntoRetos.add(fila.reto);
+				});
+				
+				conjuntoRetos.forEach(function(reto){
+					$('#retosSelect').append($('<option>', {
+					    value: reto,
+					    text: reto
+					}));
+				});
+				
+				return conjuntoRetos;
+			}
+			
+			function generarDiccionarioAlumnos(){
+				var diccAlumnos = new Map();
+				//Para cada resultado lo añade a un diccionario con alumno como clave
+				resultados.forEach(function(fila) {
+					if(!diccAlumnos.has(fila.alumno)){
+						diccAlumnos.set(fila.alumno, {
+							aciertos: [fila.correcta],
+							preguntas: [fila.pregunta],
+							respuestas: [fila.respuesta],
+							tiempos: [fila.tiempo],
+							tiemposAcumulados: [fila.tiempo]
+						});
+					}
+					else{
+						var ultimoTiempoAcumulado = diccAlumnos.get(fila.alumno).tiemposAcumulados[diccAlumnos.get(fila.alumno).tiemposAcumulados.length - 1];
+						var aciertos = diccAlumnos.get(fila.alumno).aciertos;
+						aciertos.push(fila.correcta);
+						var preguntas = diccAlumnos.get(fila.alumno).preguntas;
+						preguntas.push(fila.pregunta);
+						var respuestas = diccAlumnos.get(fila.alumno).respuestas;
+						respuestas.push(fila.respuesta);
+						var tiempos = diccAlumnos.get(fila.alumno).tiempos;
+						tiempos.push(fila.tiempo);
+						var tiemposAcumulados = diccAlumnos.get(fila.alumno).tiemposAcumulados;
+						tiemposAcumulados.push(ultimoTiempoAcumulado + fila.tiempo);
+						
+						diccAlumnos.set(fila.alumno, {
+							aciertos: aciertos,
+							preguntas: preguntas,
+							respuestas: respuestas,
+							tiempos: tiempos,
+							tiemposAcumulados: tiemposAcumulados
+						});
+					}
+				});
+				
+				return diccAlumnos;
+			}		
+			
+			function obtenerLabels(){
+				labels = new Array();
+				for (i = 0; i < resultados.length/diccAlumnos.size; i++) {
+					labels.push("Pregunta ".concat(i + 1));				
+				}
+				return labels;
+			}
+			
+			function obtenerColor(indice){
+				if(indice < colores.length)
+					return colores[indice];
+				else
+					return Math.floor(Math.random() * (colores.length));
+			}
+			
+			function  obtenerPorcentajeAciertosPregunta(){
+				var listaPorcentajeAciertosPregunta = new Array();
+				var contadorAciertos;
+				var numeroPreguntas = resultados.length/diccAlumnos.size;
+				for (i = 0; i < numeroPreguntas; i++) {
+					contadorAciertos = 0;
+					Array.from(diccAlumnos).forEach(function (elemento, indice){
+						contadorAciertos += (elemento[1].aciertos[i] === true ? 1 : 0);					
+					});
+					listaPorcentajeAciertosPregunta.push((contadorAciertos / diccAlumnos.size * 100).toFixed(2));
+				}
+				return listaPorcentajeAciertosPregunta;
+			}
+			
+			function generarDiagrama(tipo, ctx){
+				return new Chart(ctx, {
+					type: tipo,
+					data: {
+						labels: obtenerLabels(),
+						datasets: Array.from(diccAlumnos).map(function (elemento, indice){
+							color = obtenerColor(indice);
+							return {
+								label: elemento[0],
+								backgroundColor: color,
+								borderColor: color,
+								data: tipo == "line" ? elemento[1].tiemposAcumulados : elemento[1].tiempos,
+								fill: false
+							};
+						})
 					},
-					tooltips: {
-						callbacks: {
-							label: function(tooltipItem, data) {
-								var label = data.datasets[tooltipItem.datasetIndex].label || '';
-								if(tipo == "line"){
+					options: {
+						scales: {
+							yAxes: [{
+								ticks: {
+									beginAtZero:true,
+								},
+								gridLines: {
+								  color: "#32383e"
+								},
+								scaleLabel: {
+									display: true,
+									labelString: 'Tiempo de respuesta (segundos)'
+								}
+							}],
+							xAxes: [{
+								gridLines: {
+								  color: "#32383e"
+								}
+							}],
+						},
+						tooltips: {
+							callbacks: {
+								label: function(tooltipItem, data) {
+									var label = data.datasets[tooltipItem.datasetIndex].label || '';
+									if(tipo == "line"){
+										if (label) {
+											label += ': ';
+										}
+										label += tooltipItem.yLabel + " segundos totales";
+									}
+									
+									return label;
+								},
+								footer: function(tooltipItems, data) {
+									idUsuario = tooltipItems[0].datasetIndex; //Usuario
+									idPregunta = tooltipItems[0].index; //Pregunta
+									var footer = ["Pregunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta],
+												  "Respuesta: " + Array.from(diccAlumnos)[idUsuario][1].respuestas[idPregunta],
+												  "Correcta: " + (Array.from(diccAlumnos)[idUsuario][1].aciertos[idPregunta] === true ? "Sí" : "No"),
+												  "Tiempo de respuesta: " + Array.from(diccAlumnos)[idUsuario][1].tiempos[idPregunta] + " segundos"];
+									return footer;
+								}
+							},
+							footerFontStyle: "normal"
+						}
+					}
+				});
+			}
+			
+			function generarDiagramaBarrasApilado(ctx){
+				var listaPorcentajeAciertosPregunta = obtenerPorcentajeAciertosPregunta();
+				
+				return new Chart(ctx, {
+					type: 'bar',
+					data: {
+						labels: obtenerLabels(),
+						datasets: [{
+							label: 'Correcta',
+							backgroundColor: "#388E3C",
+							data: listaPorcentajeAciertosPregunta
+						}, {
+							label: 'Incorrecta',
+							backgroundColor: "#D32F2F",
+							data: listaPorcentajeAciertosPregunta.map(function (elemento){
+								return 100 - elemento;
+							})
+						}]
+					},
+					options: {
+						tooltips: {
+							mode: 'index',
+							intersect: false,
+							callbacks: {
+								label: function(tooltipItem, data) {
+									var label = data.datasets[tooltipItem.datasetIndex].label || '';
+			
 									if (label) {
 										label += ': ';
 									}
-									label += tooltipItem.yLabel + " segundos totales";
+									label += tooltipItem.yLabel + " %";
+									return label;
+								},
+								footer: function(tooltipItems, data) {
+									idUsuario = tooltipItems[0].datasetIndex; //Usuario
+									idPregunta = tooltipItems[0].index; //Pregunta
+									var footer = ["Pregunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta]];
+									return footer;
 								}
-								
-								return label;
 							},
-							footer: function(tooltipItems, data) {
-								idUsuario = tooltipItems[0].datasetIndex; //Usuario
-								idPregunta = tooltipItems[0].index; //Pregunta
-								var footer = ["Pregunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta],
-											  "Respuesta: " + Array.from(diccAlumnos)[idUsuario][1].respuestas[idPregunta],
-											  "Correcta: " + (Array.from(diccAlumnos)[idUsuario][1].aciertos[idPregunta] === true ? "Sí" : "No"),
-											  "Tiempo de respuesta: " + Array.from(diccAlumnos)[idUsuario][1].tiempos[idPregunta] + " segundos"];
-								return footer;
-							}
+							footerFontStyle: "normal"
 						},
-						footerFontStyle: "normal"
+						responsive: true,
+						scales: {
+							xAxes: [{
+								stacked: true,
+								gridLines: {
+									color: "#32383e"
+								}
+							}],
+							yAxes: [{
+								stacked: true,
+								gridLines: {
+									color: "#32383e"
+								},
+								scaleLabel: {
+									display: true,
+									labelString: 'Aciertos por pregunta (%)'
+								}
+							}]
+						}
 					}
-				}
-			});
-		}
-		
-		function generarDiagramaBarrasApilado(ctx){
-			var listaPorcentajeAciertosPregunta = obtenerPorcentajeAciertosPregunta();
+				});			
+			}
 			
-			return new Chart(ctx, {
-				type: 'bar',
-				data: {
-					labels: obtenerLabels(),
-					datasets: [{
-						label: 'Correcta',
-						backgroundColor: "#388E3C",
-						data: listaPorcentajeAciertosPregunta
-					}, {
-						label: 'Incorrecta',
-						backgroundColor: "#D32F2F",
-						data: listaPorcentajeAciertosPregunta.map(function (elemento){
-							return 100 - elemento;
-						})
-					}]
-				},
-				options: {
-					tooltips: {
-						mode: 'index',
-						intersect: false,
-						callbacks: {
-							label: function(tooltipItem, data) {
-								var label = data.datasets[tooltipItem.datasetIndex].label || '';
-		
-								if (label) {
-									label += ': ';
-								}
-								label += tooltipItem.yLabel + " %";
-								return label;
-							},
-							footer: function(tooltipItems, data) {
-								idUsuario = tooltipItems[0].datasetIndex; //Usuario
-								idPregunta = tooltipItems[0].index; //Pregunta
-								var footer = ["Pregunta: " + Array.from(diccAlumnos)[idUsuario][1].preguntas[idPregunta]];
-								return footer;
-							}
-						},
-						footerFontStyle: "normal"
-					},
-					responsive: true,
-					scales: {
-						xAxes: [{
-							stacked: true,
-							gridLines: {
-								color: "#32383e"
-							}
-						}],
-						yAxes: [{
-							stacked: true,
-							gridLines: {
-								color: "#32383e"
-							},
-							scaleLabel: {
-								display: true,
-								labelString: 'Aciertos por pregunta (%)'
-							}
-						}]
-					}
-				}
-			});			
-		}		
+			function prepararGraficos(){
+				$("#diagramaTiempoLineas").parent().show();
+				$("#diagramaTiempoBarras").parent().hide();
+				$("#diagramaAciertosBarras").parent().hide();
+				$("#tablaResultados").hide();
+				$("#diagramasSelect").change(function(){
+				    if($(this).val() == "Gráfico de líneas de tiempo acumulado"){
+				    	$("#diagramaTiempoLineas").parent().show();
+						$("#diagramaTiempoBarras").parent().hide();
+						$("#diagramaAciertosBarras").parent().hide();
+						$("#tablaResultados").hide();
+				    }
+				    else if($(this).val() == "Gráfico de barras de tiempo de respuesta"){
+				    	$("#diagramaTiempoLineas").parent().hide();
+						$("#diagramaTiempoBarras").parent().show();
+						$("#diagramaAciertosBarras").parent().hide();
+						$("#tablaResultados").hide();
+				    }
+				    else if($(this).val() == "Gráfico de barras de aciertos"){
+				    	$("#diagramaTiempoLineas").parent().hide();
+						$("#diagramaTiempoBarras").parent().hide();
+						$("#diagramaAciertosBarras").parent().show();
+						$("#tablaResultados").hide();
+				    }
+				    else if($(this).val() == "Tabla de contenido de resultados"){
+				    	$("#diagramaTiempoLineas").parent().hide();
+						$("#diagramaTiempoBarras").parent().hide();
+						$("#diagramaAciertosBarras").parent().hide();
+						$("#tablaResultados").show();
+				    }
+				});
+			}
+		});	
 	/*]]>*/
 	</script>    
   </div>

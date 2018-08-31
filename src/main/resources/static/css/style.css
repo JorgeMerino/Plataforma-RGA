@@ -131,6 +131,17 @@ div#analiticas{
 	color: white;
 }
 
+.formulario-diagramas select{
+	color: white;
+	background: #2c3034;
+	border: 1px solid #32383e;
+}
+
+.formulario-diagramas select:focus{
+	color: white;
+	background: #2c3034;
+}
+
 i{
 	vertical-align: middle;
 	margin: 0px 5px 5px 5px;
