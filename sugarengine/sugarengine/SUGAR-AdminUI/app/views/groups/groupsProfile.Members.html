@@ -1,0 +1,29 @@
+<div class="col-xs-3">
+	<button class="btn btn-success" type="button" ng-click="addMember(item)" ng-if="hasCreateMemberPermission"><i class="fa fa-user"> Add New Member</i></button>
+</div>
+<table class="table table-bordered table-hover" ng-init="init()">
+	<tr class="listitem">
+		<td style="width: 10px"></td>
+		<th></th>
+		<th ng-if="hasGetRolePermission">Role</th>
+		<th></th>
+	</tr>
+
+	<!-- Now show the accepted friends -->
+    <tr class="listitem" ng-repeat="item in items | orderBy: 'name' | limitTo:pagination.perPage:pagination.perPage * (pagination.currentPage-1)" ng-class="['', 'info'][(itemid == item[config.display.individualId])*1]">
+    	<td></td>
+        <td><a ng-click="viewMemberProfile(item)"><i class="fa fa-user"/> {{item.name}}</td>
+        <!-- TODO add all roles the player has of this group -->
+		<td ng-if="hasGetRolePermission">
+			<span>{{item.role}}</span>
+		</td>
+        <td>
+            <button class="btn btn-danger pull-right" type="button" ng-click="deleteMember(item)" ng-if="hasDeleteMemberPermission"><i class="fa fa-times"> Remove</i></button>
+        </td>
+    </tr>
+</table>
+<contentFooter>
+<div class="col-xs-12 text-center">
+	<uib-pagination total-items="items.length" ng-model="pagination.currentPage" max-size="pagination.perPage" class="pagination-sm" boundary-links="true"></uib-pagination>
+</div>
+</contentFooter>

@@ -1,0 +1,126 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>SUGAR Admin Panel</title>
+		<meta name="description" content="">
+		<meta name="viewport" content="width=device-width">
+		<!-- build:css(.) styles/vendor.css -->
+		<!-- bower:css -->
+		<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css" />
+		<link rel="stylesheet" href="bower_components/AdminLTE/dist/css/AdminLTE.css" />
+		<!-- endbower -->
+		<link rel="stylesheet" href="bower_components/font-awesome/css/font-awesome.css" />
+		<!-- endbuild -->
+		<!-- build:css(.tmp) styles/main.css -->
+		<link rel="stylesheet" href="styles/main.css">
+		<!-- build:css(.tmp) styles/SUGAR_skin.css -->
+		<link rel="stylesheet" href="styles/SUGAR_skin.css">
+		<!-- endbuild -->
+		<!-- endbuild -->
+	</head>
+	<body class="skin-purple fixed" ng-app="sgaAdminApp">
+
+		<div ng-controller="LayoutCtrl" ng-include="'views/_layout.html'"></div>
+
+		<!-- build:js(.) scripts/vendor.js -->
+		<!-- bower:js -->
+		<script src="bower_components/jquery/dist/jquery.js"></script>
+		<script src="bower_components/angular/angular.js"></script>
+		<script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="bower_components/angular-animate/angular-animate.js"></script>
+		<script src="bower_components/angular-aria/angular-aria.js"></script>
+		<script src="bower_components/angular-cookies/angular-cookies.js"></script>
+		<script src="bower_components/angular-messages/angular-messages.js"></script>
+		<script src="bower_components/angular-resource/angular-resource.js"></script>
+		<script src="bower_components/angular-route/angular-route.js"></script>
+		<script src="bower_components/angular-sanitize/angular-sanitize.js"></script>
+		<script src="bower_components/angular-touch/angular-touch.js"></script>
+		<script src="bower_components/AdminLTE/dist/js/app.js"></script>
+		<script src="bower_components/jquery-slimscroll/jquery.slimscroll.js"></script>
+		<script src="bower_components/angular-cookie/angular-cookie.js"></script>
+		<script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.js"></script>
+		<script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
+		<!-- endbower -->
+		<script src="bower_components/jquery-slimscroll/jquery.slimscroll.min.js"></script>
+		<!-- endbuild -->
+		<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+
+				<!-- build:js({.tmp,app}) scripts/scripts.js -->
+				<script src="scripts/app.js"></script>
+				<!-- main controllers -->
+				<script src="scripts/controllers/_layout.js"></script>
+				<script src="scripts/controllers/_login.js"></script>
+				<script src="scripts/controllers/_main.js"></script>
+				<script src="scripts/controllers/_header.js"></script>
+				<script src="scripts/controllers/_sidebar.js"></script>
+				<!-- games -->
+				<script src="scripts/controllers/games/games.js"></script>
+				<script src="scripts/controllers/games/gamesProfile.js"></script>
+				<script src="scripts/controllers/games/gamesProfileDetails.js"></script>
+				<script src="scripts/controllers/games/gamesProfileData.js"></script>
+				<script src="scripts/controllers/games/gamesProfileAchievements.js"></script>
+				<script src="scripts/controllers/games/gamesProfileNewAchievement.js"></script>
+				<script src="scripts/controllers/games/gamesProfileSkills.js"></script>
+				<script src="scripts/controllers/games/gamesProfileNewSkill.js"></script>
+				<script src="scripts/controllers/games/gamesProfileResources.js"></script>
+				<script src="scripts/controllers/games/gamesProfileLeaderboards.js"></script>
+				<script src="scripts/controllers/games/gamesProfileNewLeaderboard.js"></script>
+				<script src="scripts/controllers/games/gamesProfileRoles.js"></script>
+				<!-- groups -->
+				<script src="scripts/controllers/groups/groups.js"></script>
+				<script src="scripts/controllers/groups/groupsProfile.js"></script>
+				<script src="scripts/controllers/groups/groupsProfileDetails.js"></script>
+				<script src="scripts/controllers/groups/groupsProfileData.js"></script>
+				<script src="scripts/controllers/groups/groupsProfileMembers.js"></script>
+				<script src="scripts/controllers/groups/groupsProfileAlliances.js"></script>
+				<script src="scripts/controllers/groups/groupsProfileRoles.js"></script>
+				<!-- users -->
+				<script src="scripts/controllers/users/users.js"></script>
+				<script src="scripts/controllers/users/usersProfile.js"></script>
+				<script src="scripts/controllers/users/usersProfileDetails.js"></script>
+				<script src="scripts/controllers/users/usersProfileData.js"></script>
+				<script src="scripts/controllers/users/usersProfileFriends.js"></script>
+				<script src="scripts/controllers/users/usersProfileGroups.js"></script>
+				<!-- roles -->
+				<script src="scripts/controllers/roles/roles.js"></script>
+				<script src="scripts/controllers/roles/rolesProfile.js"></script>
+				<!-- authenticaton sources -->
+				<script src="scripts/controllers/authenticationSources/authenticationSources.js"></script>
+				<!-- services -->
+				<script src="scripts/services/requestInterceptor.js"></script>
+				<script src="scripts/services/auth.js"></script>
+				<script src="scripts/services/user.js"></script>
+				<!-- custom api services -->
+				<script src="scripts/services/serviceAchievements.js"></script>
+				<script src="scripts/services/serviceUsers.js"></script>
+				<script src="scripts/services/serviceGroups.js"></script>
+				<script src="scripts/services/serviceLeaderboards.js"></script>
+				<script src="scripts/services/serviceResources.js"></script>
+				<script src="scripts/services/serviceGames.js"></script>
+				<script src="scripts/services/serviceSkills.js"></script>
+				<script src="scripts/services/serviceRoles.js"></script>
+				<script src="scripts/services/serviceErrors.js"></script>
+				<script src="scripts/services/serviceSources.js"></script>
+				<!-- other services -->
+				<script src="scripts/services/listConfigs.js"></script>
+				<script src="scripts/services/modalManager.js"></script>
+				<script src="scripts/services/permissions.js"></script>
+				<!-- endbuild -->
+</body>
+</html>
+<!-- Error Message Popup -->
+
+<script type="text/ng-template" id="errorMessageModal.html">
+    <div class="modal-header" ng-style="{'background-color':'#f22'}">
+        <label class="col-xs-12 modal-title"  ng-style="{color:'white', 'font-size':'30px'}"><b>Error</b></label>
+    </div>
+    <div>
+    	<label class='col-xs-12' ng-style="{ 'font-size' : '20px'}">Error Code: {{Code}}</label>
+        <label class="col-xs-12" ng-style="{ 'font-size' : '20px'}">Error Message: {{Message}}</label>
+        <label class="col-xs-12" ng-style="{ 'font-size' : '20px'}">{{OtherInformation}}</label>
+    </div>
+    <div class="modal-footer">
+		<button class="btn btn-outline-danger pull-right" type="button" ng-click="closeModal()">Ok</button>
+    </div>
+</script>

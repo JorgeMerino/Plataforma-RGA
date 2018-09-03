@@ -1,0 +1,65 @@
+<contentHeader>
+	<div>
+		<div class="col-xs-12">
+			<button class="btn btn-secondary" type="button" ng-click=back()>Back To Games</button>
+		</div>
+	</div>
+	<div class="col-xs-12" ng-if="!gameFound">
+	    <h3><span>Cannot display game, no game found with ID:- </span>{{itemId}}<span></span></h3>
+	</div>
+
+	<div class="col-xs-12" ng-if="gameFound">
+		<h2>Game: {{gameName}}</h2>
+	</div>
+	<div class="col-xs-12" ng-if="gameFound">
+		<button class="btn btn-primary" ui-sref="gamesProfile.Details" ui-sref-active="activeState">Details</button>
+		<button class="btn btn-primary" ui-sref="gamesProfile.Data" ui-sref-active="activeState">Game Data</button>
+		<button class="btn btn-primary" ui-sref="gamesProfile.Achievements" ui-sref-active="activeState" ng-if="hasGetAchievementPermission">Achievements</button>
+		<button class="btn btn-primary" ui-sref="gamesProfile.Skills" ui-sref-active="activeState" ng-if="hasGetSkillPermission">Skills</button>
+		<button class="btn btn-primary" ui-sref="gamesProfile.Resources" ui-sref-active="activeState" ng-if="hasGetResourcePermission">Resources</button>
+		<button class="btn btn-primary" ui-sref="gamesProfile.Leaderboards" ui-sref-active="activeState" ng-if="hasGetLeaderboardPermission">Leaderboards</button>
+		<button class="btn btn-primary" ui-sref="gamesProfile.Roles" ui-sref-active="activeState" ng-if="hasCreateRolePermission">Manage Roles</button>
+	</div>
+</contentHeader>
+<contentMain>
+	<div ng-init="init()" ng-if="gameFound" >
+		<div>
+			<ui-view></ui-view>
+		</div>
+	</div>
+</contenMain>
+
+
+<!-- Confirm that we want to delete the game  -->
+
+<script type="text/ng-template" id="confirmDeleteModal.html">
+	<div class="modal-header">
+		<h3 class="modal-title">You are deleting {{name}}</h3>
+	</div>
+	<div class="modal-body">
+		Are you sure you want to delete the {{type}} {{name}}?
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger pull-left" type="button" ng-click="closeModal()"><i class="fa fa-times"></i> No</button>
+		<button class="btn btn-success" type="button" ng-click="delete()"><i class="fa fa-trash-o"></i> Yes</button>
+	</div>
+</script>
+
+<!-- request to add a new user to a role -->
+
+<script type="text/ng-template" id="addRoleModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title"><span>Add a new Role for User</h3>
+    </div>
+    <div class="modal-body">
+        <class>Enter User Name</class>
+        <form name="myForm">
+        <input type="text" class="form-control" ng-value="txtBox" ng-model="txtBox" name="txtBox" placeholder="Username" required/>
+        </form>
+        <class="form-control" ng-if="!exists">Error: User Not Found</class>
+    </div>
+    <div class="modal-footer">
+		<button class="btn btn-danger pull-left" type="button" ng-click="closeModal()"><i class="fa fa-times"></i> Cancel</button>
+        <button class="btn btn-success" type="button" ng-click="add(item)"ng-disabled="myForm.$invalid"></i> Add</button>
+    </div>>
+</script>

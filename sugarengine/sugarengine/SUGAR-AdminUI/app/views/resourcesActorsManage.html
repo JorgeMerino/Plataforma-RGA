@@ -1,0 +1,62 @@
+<contentHeader>
+<div>
+	<div class="col-xs-3">
+		<button class="btn btn-secondary" type="button" ng-click=back()>Back To Resources</button>
+	</div>
+</div>
+</contentHeader>
+<contentMain>
+<div>
+	<div>
+	    <h3 ng-if="!gameFound" ><span>Cannot display resources, no game found with ID:- </span>{{itemId}}<span></span></h3>
+    </div>
+	<div class="col-xs-12">
+		<h4>This page displays all the resources in the selected game, showing the name of the resource<br />From this page you can also:<br />- Create new resources for the selected game<br />- Edit current resources<br />- Delete resources</h4>
+	</div>
+</div>
+<div ng-init="init()" ng-if="gameFound">
+	<table class="table table-bordered table-hover">
+		<tr>
+			<td style="width: 1%"></td>
+			<th style="width: 39%">Resources owned by <span>{{actorName}}</span></th>
+			<th style="width: 20%"></th>
+			<th style="width: 10%"></th>
+			<th style="width: 10%"></th>
+			<th style="width: 30%"></th>
+		</tr>
+		<tr>
+			<th></th>
+			<th>Resource Name</th>
+			<th>Quantity Owned</th>
+		</tr>
+		<tr class="listitem" ng-repeat="item in actorItems | limitTo:pagination.perPage:((pagination.currentPage - 1) * pagination.perPage)">
+			<td style="width: 10px"></td>
+            <td>{{item.key}}</td>
+			<td>{{item.quantity}}</td>
+		</tr>
+		<tr>
+			<th></th>
+			<th>Available Resources in game</th>
+		</tr>
+		<tr>
+			<th></th>
+			<th>Resource Name</th>
+			<th>Default Quantity</th>
+			<th>New Value</th>
+			<th></th>
+		</tr>
+		<tr class="listitem" ng-repeat="item in items | limitTo:pagination.perPage:((pagination.currentPage - 1) * pagination.perPage)">
+			<td style="width: 10px"></td>
+            <td>{{item.key}}</td>
+			<td>{{item.quantity}}</td>
+			<td><input type="text" ng-model="item.Value" required></td>
+			<td><button class="btn btn-success pull-left" ng-disabled="!(item.Value.length > 0)" ng-click="setValue(item)">Add</button></td>
+		</tr>
+	</table>
+</div>
+</contentMain>
+<contentFooter>
+	<div class="col-xs-4 col-xs-offset-4 text-center">
+		<uib-pagination total-items="items.length" ng-model="pagination.currentPage" max-size="pagination.perPage" class="pagination-sm" boundary-links="true"></uib-pagination>
+	</div>
+</contentFooter>

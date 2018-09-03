@@ -1,0 +1,36 @@
+<contentHeader>
+<div>
+	<div class="col-xs-3">
+		<button class="btn btn-secondary" type="button" ng-click=back()>Back To Menu</button>
+	</div>
+</div>
+</contentHeader>
+<contentMain>
+	<div class="col-xs-12">
+		<h4>This page displays the list of games which can be selected to manage resources within each game</h4>
+	</div>
+	<div ng-init="init()">
+		<table class="table table-bordered table-hover">
+			<tr>
+				<td style="width: 10px"></td>
+				<th>Select to view Resources</th>
+			</tr>
+			<tr>
+				<td style="width: 10px"></td>
+				<td ng-click="showGlobal()">GLOBAL RESOURCES</td>
+			</tr>
+			<tr class="listitem" ng-repeat="item in items | orderBy: 'name' | limitTo:pagination.perPage:((pagination.currentPage - 1) * pagination.perPage)">
+				<!--<td></td>-->
+				<td style="width: 10px"></td>
+	            <td ng-click="showResources(item)">{{item.name}}</td>
+			</tr>
+		</table>
+	</div>
+</contentMain>
+<contentFooter>
+	<div class="col-xs-4 col-xs-offset-4 text-center">
+		<uib-pagination total-items="items.length" ng-model="pagination.currentPage" max-size="pagination.perPage" class="pagination-sm" boundary-links="true"></uib-pagination>
+	</div>
+		<div class="col-xs-4 text-center button-container">
+	</div>
+</contentFooter>

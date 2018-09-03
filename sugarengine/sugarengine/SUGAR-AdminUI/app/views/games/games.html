@@ -1,0 +1,81 @@
+<contentHeader>
+	<div class="col-xs-3">
+		<button class="btn btn-secondary" type="button" ng-click=back()>Back To Menu</button>
+	</div>
+	<div class="col-xs-12">
+		<h4>This page displays the list of games in the system, using this page you can:<br />- Create new games<br />- Delete games</h4>
+	</div>
+</contentHeader>
+<contentMain>
+	<div class="col-xs-3 text-center button-container">
+		<button class="btn btn-success pull-left" type="button" ng-click="create()" ng-if="hasCreatePermission"><i class="fa fa-plus"></i> Create New Game</button>
+	</div>
+	<div ng-init="init()">
+	<table class="table table-bordered table-hover" ng-if="hasGetListPermission">
+		<tr class="listitem">
+			<th style="width: 10px"></th>
+			<th></th>
+		</tr>
+		<tr class="listitem" ng-repeat="item in items | orderBy: 'name' | limitTo:pagination.perPage:((pagination.currentPage - 1) * pagination.perPage)">
+			<td></td>
+			<td>
+				<a ng-click="select(item)"><b> {{item.name}}</b></a>
+      </td>
+		</tr>
+	</table>
+</div>
+</contentMain>
+<contentFooter>
+	<div class="col-xs-12 text-center">
+		<uib-pagination total-items="items.length" ng-model="pagination.currentPage" max-size="pagination.perPage" class="pagination-sm" boundary-links="true"></uib-pagination>
+	</div>
+</contentFooter>
+
+<!-- Confirm that we want to delete the game  -->
+
+<script type="text/ng-template" id="confirmDeleteModal.html">
+	<div class="modal-header">
+		<h3 class="modal-title">You are deleting {{config.display.individualTitle(item)}}</h3>
+	</div>
+	<div class="modal-body">
+		Are you sure you want to delete the game {{config.display.individualTitle(item)}}?
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger pull-left" type="button" ng-click="close()"><i class="fa fa-times"></i> No, cancel</button>
+		<button class="btn btn-success" type="button" ng-click="delete()"><i class="fa fa-trash-o"></i> Yes, delete {{config.display.individualTitle(item)}}</button>
+	</div>
+</script>
+
+<!-- Create a new game  -->
+
+<script type="text/ng-template" id="createModal.html">
+  <form name="myForm">
+	<div class="modal-header">
+		<h3 class="modal-title">Create new game</h3>
+	</div>
+	<div class="modal-body">
+		<div class="row">
+			<div class="col-xs-3"><label>Name</label></div>
+			<div class="col-xs-9">
+				<input type="text" placeholder="Game Name" class="form-control" ng-model="item.Name" required/>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-xs-3"><label>Description</label></div>
+			<div class="col-xs-9">
+				<input type="text" placeholder="Game Description" class="form-control" ng-model="item.Description" required/>
+			</div>
+		</div>
+	</div>
+		<div class="form-group">
+			<label for="inputName" class="col-xs-3 control-label">Icon:</label>
+			<div class="col-xs-9">
+				<input class="input-lg" id="file" type="file" ng-model="item.Icon"/>
+			</div>
+		</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger pull-left" type="button" ng-click="close()"><i class="fa fa-times"></i> Close</button>
+		<button class="btn btn-success" type="button" ng-click="save()" ng-disabled="myForm.$invalid"><i class="fa fa-save"></i> Save</button>
+	</div>
+  </form>
+</script>

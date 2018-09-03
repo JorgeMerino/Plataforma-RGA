@@ -1,0 +1,109 @@
+<div class="col-xs-12">
+	<button class="btn btn-success" type="button" ng-click="addData()" ng-if="hasCreateGameDataPermission">Create New Game Data</button>
+</div>
+<form class="form-horizontal" name="myForm" ng-if="CreateNewData" background-color="#ccc">
+	<div class="form-group">
+		<h4 for="inputName" class="col-xs-2 control-label">Key:</h4>
+		<div class="col-xs-10">
+			<input type="text" placeholder="Actor Data Key" class="form-control" ng-model="form.key" required/>
+		</div>
+  </div>
+  <div class="form-group">
+      <h4 for="inputName"  class="col-xs-2 control-label">Actor Type:</h4>
+      <div class="col-xs-10">
+        <select class="form-control" ng-model="form.actorType" required>
+          <option value="user">User</option>
+          <option value="group">Group</option>
+        </select>
+      </div>
+    </div>
+	<div class="form-group">
+		<h4 for="inputName" class="col-xs-2 control-label">Actor Name:</h4>
+		<div class="col-xs-10">
+			<input type="text" placeholder="Actor Name" class="form-control" ng-model="form.actorName" required/>
+		</div>
+	</div>
+	<div class="form-group">
+		<h4 for="inputName" class="col-xs-2 control-label">Value:</h4>
+		<div class="col-xs-10">
+			<input type="text" placeholder="Actor Data value" class="form-control" ng-model="form.value" required/>
+		</div>
+	</div>
+	<div class="form-group">
+		<h4 for="inputName"  class="col-xs-2 control-label">Evaludation Data Type:</h4>
+		<div class="col-xs-10">
+			<select class="form-control" ng-model="form.evaluationDataType" required>
+				<option value="string">String</option>
+				<option value="long">Long</option>
+				<option value="float">Float</option>
+				<option value="boolean">Boolean</option>
+			</select>
+		</div>
+	</div>
+	<div class="col-xs-6">
+		<button class="btn btn-danger pull-left" type="button" ng-click="cancel()">Cancel</button>
+	</div>
+	<div class="col-xs-6">
+		<button class="btn btn-success pull-right" type="button" ng-click="addNewData(form)" ng-disabled="myForm.$invalid" ng-if="hasCreateGameDataPermission ">Create New Game Data</button>
+	</div>
+</form>
+<br/>
+<div ng-init="init()">
+  <div class="col-xs-5">
+    <h4 class="col-xs-4">Select a User:</h4>
+      <select class="col-xs-4" ng-options="user.name for user in users" ng-model="select.user" required />
+      <button class="col-xs-4 btn btn-success pull-left" type="button" ng-click="loadUserData(select.user)">Load User data For Game </button>
+    </span>
+  </div>
+<div class="col-xs-1">
+  <h4 align="center">OR</h4>
+</div>
+  <div class="col-xs-5">
+    <h4 class="col-xs-4">Select a group:</h4>
+      <select class="col-xs-4" ng-options="group.name for group in groups" ng-model="select.group" required />
+      <button class="col-xs-4 btn btn-success pull-left" type="button" ng-click="loadGroupData(select.group)">Load Group data For Game </button>
+  </div>
+</div>
+<table class="table table-bordered table-hover" ng-init="init()" ng-if="hasGetGameDataPermission">
+	<tr class="listitem">
+		<th style="width: 30%"></th>
+		<td style="width: 30%"></td>
+		<td style="width: 30%"></td>
+		<td style="width: 10%"></td>
+	</tr>
+	<tr>
+		<th>Key</th>
+		<th>Evaluation Data Type</th>
+		<th>value</th>
+		<!-- <th>Game Id</th> -->
+	</tr>
+	<tr class="listitem" ng-repeat="item in datas | orderBy: 'key' | limitTo:pagination.perPage:pagination.perPage * (pagination.currentPage-1)">
+        <td>{{item.key}}</td>
+		<td ng-if="!isEditing[item.index]">{{item.evaluationDataType}}</td>
+		<td ng-show="isEditing[item.index]">
+			<select class="form-control" ng-model="item.evaluationDataType">
+				<option value="0">String</option>
+				<option value="1">Long</option>
+				<option value="2">Float</option>
+				<option value="3">Boolean</option>
+			</select>
+		</td>
+		<td ng-if="!isEditing[item.index]">{{item.value}}</td>
+		<td ng-show="isEditing[item.index]">
+			<input type="text" class="form-control" ng-model="item.value" placeholder="{{item.value}}"/>
+		</td>
+		<!-- <td ng-if="!isEditing[item.index]">{{item.gameId}}</td>
+		<td ng-show="isEditing[item.index]">
+			<input type="text" class="form-control" ng-model="form.gameId" placeholder="{{item.gameId}}"/>
+		</td> -->
+		<!-- <td>
+			<button class="btn btn-info" type="button" ng-click="edit(item.index)">{{EditButtonText[item.index]}}</button>
+			<button class="btn btn-success" type="button" ng-click="update(item.index, item.key, item)" ng-if="isEditing[item.index]">Apply</button>
+		</td> -->
+    </tr>
+</table>
+<contentFooter>
+<div class="col-xs-12 text-center">
+	<uib-pagination total-items="items.length" ng-model="pagination.currentPage" max-size="pagination.perPage" class="pagination-sm" boundary-links="true"></uib-pagination>
+</div>
+</contentFooter>

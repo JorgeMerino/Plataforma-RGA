@@ -1,0 +1,14 @@
+version: '2'
+
+services:
+  sugar-v1:
+    ports:
+      - "8081:59400"
+
+  sugar-v1-mariadb:
+    ports:
+      - "8082:3306"
+
+  sugar-admin:
+    ports:
+      - "8083:4200"

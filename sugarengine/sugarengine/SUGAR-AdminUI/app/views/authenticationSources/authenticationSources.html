@@ -1,0 +1,106 @@
+<contentHeader>
+	<div class="col-xs-3">
+		<button class="btn btn-secondary" type="button" ng-click=back()>Back To Menu</button>
+	</div>
+	<div class="col-xs-12">
+		<h4>This page displays the list of account authentication sources available, using this page you can:<br />- Create new sources<br />- Delete sources</h4>
+	</div>
+</contentHeader>
+<contentMain>
+<div class="col-xs-12">
+	<button class="btn btn-success" type="button" ng-click="addData()" ng-if="hasCreatePermission">Add New Authentication Source</button>
+</div>
+<form class="form-horizontal" name="myForm" ng-if="CreateNewData" background-color="#ccc">
+	<div class="form-group">
+		<h4 for="inputName" class="col-xs-2 control-label">Token:</h4>
+		<div class="col-xs-10">
+			<input type="text" placeholder="Authentication Source" class="form-control" ng-model="form.token" required/>
+		</div>
+	</div>
+	<div class="form-group">
+		<h4 for="inputName" class="col-xs-2 control-label">Description:</h4>
+		<div class="col-xs-10">
+			<input type="text" placeholder="Description" class="form-control" ng-model="form.description" required/>
+		</div>
+	</div>
+	
+	<div class="form-group">
+		<h4 class="col-xs-2 control-label" >Requires Password:</h4>
+	  	<div class="col-xs-10">
+	  		<input type="checkbox" ng-model="form.requiresPassword">
+	  	</div>
+	</div>
+
+	<div class="form-group">
+		<h4 class="col-xs-2 control-label" >Auto Register:</h4>
+	  	<div class="col-xs-10">
+	  		<input type="checkbox" ng-model="form.autoRegister">
+	  	</div>
+	</div>
+	<div class="col-xs-6">
+		<button class="btn btn-danger pull-left" type="button" ng-click="addData()">Cancel</button>
+	</div>
+	<div class="col-xs-6">
+		<button class="btn btn-success pull-right" type="button" ng-click="create(form)" ng-disabled="myForm.$invalid" ng-if="hasCreatePermission ">Create New Actor Information</button>
+	</div>
+</form>
+<table class="table table-bordered table-hover" ng-init="init()">
+	<tr class="listitem">
+		<th><h4>Authentication Sources</h4></th>
+	</tr>
+	<tbody ng-repeat="item in items | orderBy: 'id' | limitTo:pagination.perPage:pagination.perPage * (pagination.currentPage-1)">
+	<tr>
+		<td style="width: 15%">{{item.token}}</td>
+		<td style="width: 40%"></td>
+		<td style="width: 10%">
+			<button class="btn btn-info pull-right" type="button" ng-click="toggleView(item.index)" ng-if="hasGetListPermission">View</button>
+		</td>
+    </tr>
+	    <form class="form-horizontal">
+		    <tr ng-show="isViewing[item.index]">
+				<th><h4>Token</h4></th>
+				<td ng-if="!isEditing">{{item.token}}</td>
+				<td ng-show="isEditing">
+					<input type="text" class="form-control" ng-model="form.token" placeholder="{{item.token}}"/>	
+				</td>
+			</tr>
+			<tr ng-show="isViewing[item.index]">
+				<th><h4>Description</h4></th>
+				<td ng-if="!isEditing">{{item.description}}</td>	
+				<td ng-show="isEditing">
+					<input type="text" class="form-control" ng-model="form.description" placeholder="{{item.description}}"/>	
+				</td>
+			</tr>
+			<tr ng-show="isViewing[item.index]">
+				<th><h4>Requires Password</h4></th>
+				<td ng-if="!isEditing">{{item.requiresPassword}}</td>
+				<td ng-show="isEditing">
+					<input type="checkbox" ng-model="form.requiresPassword" ng-checked="{{item.requiresPassword}}">	
+				</td>
+			</tr>
+			<tr ng-show="isViewing[item.index]">
+				<th><h4>Auto Register</h4></th>
+				<td ng-if="!isEditing">{{item.autoRegister}}</td>
+				<td ng-show="isEditing">
+					<input type="checkbox" ng-model="form.autoRegister" ng-checked="{{item.autoRegister}}">	
+				</td>
+			</tr>
+			<tr ng-show="isViewing[item.index]">
+				<td>
+					<button class="btn btn-info pull-left" type="button" ng-click="editAuthentication(item.index)" ng-if="hasUpdatePermission">{{editButtonText}}</button>
+					<button class="btn btn-success pull-left" type="button" ng-click="saveChanges(item.index, form)" ng-if="hasUpdatePermission && isEditing"> Save Changes</button>
+				</td>
+				<td></td>
+				<td>
+					<button class="btn btn-danger pull-right" type="button" ng-click="remove(item)" ng-if="hasDeletePermission && item.token!='SUGAR'"><i class="fa fa-times"> Remove</i></button>
+				</td>
+			</tr>
+		</form>
+	</tbody>
+</table>
+</contentMain>
+<contentFooter>
+<div class="col-xs-12 text-center">
+	<uib-pagination total-items="items.length" ng-model="pagination.currentPage" max-size="pagination.perPage" class="pagination-sm" boundary-links="true"></uib-pagination>
+</div>
+</contentFooter>

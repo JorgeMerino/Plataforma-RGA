@@ -1,0 +1,52 @@
+<div>
+    <button class="btn btn-danger pull-left" type="button" ng-click="delete(item)" ng-if="hasDeleteUserPermission">Delete User</button>
+</div>
+<div class="col-xs-12">
+	<button class="btn btn-success" type="button" ng-click="addData()" ng-if="hasCreateActorDetailsPermission">Add New Actor Information</button>
+</div>
+<form class="form-horizontal" name="myForm" ng-if="CreateNewData" background-color="#ccc">
+	<div class="form-group">
+		<h4 for="inputName" class="col-xs-2 control-label">Key:</h4>
+		<div class="col-xs-10">
+			<input type="text" placeholder="Actor Data Key" class="form-control" ng-model="form.key" required/>
+		</div>
+	</div>
+	<div class="form-group">
+		<h4 for="inputName" class="col-xs-2 control-label">Value:</h4>
+		<div class="col-xs-10">
+			<input type="text" placeholder="Actor Data value" class="form-control" ng-model="form.value" required/>
+		</div>
+	</div>
+	<div class="col-xs-6">
+		<button class="btn btn-danger pull-left" type="button" ng-click="addData()">Cancel</button>
+	</div>
+	<div class="col-xs-6">
+		<button class="btn btn-success pull-right" type="button" ng-click="create(form)" ng-disabled="myForm.$invalid" ng-if="hasCreateActorDetailsPermission ">Create New Actor Information</button>
+	</div>
+</form>
+<table class="table table-bordered table-hover" ng-init="init()" ng-if="hasGetActorDataPermission">
+	<tr class="listitem">
+		<th style="width: 20%"></th>
+		<td style="width: 40%"></td>
+		<td style="width: 20%"></td>
+	</tr>
+	<tr>
+      <th>Key</th>
+      <th>value</th>
+    <tr class="listitem" ng-repeat="item in items | orderBy: 'key' | limitTo:pagination.perPage:pagination.perPage * (pagination.currentPage-1)">
+      <td>{{item.key}}</td>
+      <td ng-if="!isEditing[item.index]">{{item.value}}</td>
+      <td ng-show="isEditing[item.index] && item.key != 'id'">
+        <input type="text" class="form-control" ng-model="form.value" placeholder="{{item.value}}"/>
+      </td>
+      <td ng-if="item.key != 'id'">
+        <button class="btn btn-info" type="button" ng-click="edit(item.index)">{{EditButtonText[item.index]}}</button>
+        <button class="btn btn-success" type="button" ng-click="update(item.index, item.key, form.value)" ng-if="isEditing[item.index]">Apply</button>
+      </td>
+      </tr>
+</table>
+<contentFooter>
+<div class="col-xs-12 text-center">
+	<uib-pagination total-items="items.length" ng-model="pagination.currentPage" max-size="pagination.perPage" class="pagination-sm" boundary-links="true"></uib-pagination>
+</div>
+</contentFooter>

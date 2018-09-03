@@ -1,0 +1,80 @@
+<contentHeader>
+	<div>
+		<div class="col-xs-12">
+			<button class="btn btn-secondary" type="button" ng-click=back()>Back To Users</button>
+		</div>
+	</div>
+	<div class="col-xs-12" ng-if="!userFound">
+	    <h3><span>Cannot display user, no user found with ID:- </span>{{itemId}}<span></span></h3>
+	</div>
+
+	<div class="col-xs-12" ng-if="userFound">
+		<h2>{{userName}}'s Profile</h2>
+	</div>
+	<div class="col-xs-12" ng-if="userFound">
+		<button class="btn btn-primary" ui-sref="userProfile.Details" ui-sref-active="activeState">Details</button>
+		<button class="btn btn-primary" ui-sref="userProfile.Data" ui-sref-active="activeState">Actor Data</button>
+		<button class="btn btn-primary" ui-sref="userProfile.Friends" ui-sref-active="activeState">Friends</button>
+		<button class="btn btn-primary" ui-sref="userProfile.Groups" ui-sref-active="activeState">Groups</button>
+	</div>
+</contentHeader>
+<contentMain>
+	<div ng-init="init()" ng-if="userFound" >
+		<div>
+			<ui-view></ui-view>
+		</div>
+	</div>
+</contenMain>
+
+<!-- request to add a new friend -->
+
+<script type="text/ng-template" id="addFriendModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title"><span>Add a new Friend</h3>
+    </div>
+    <div class="modal-body">
+        <class>Enter Player Name</class>
+        <form name="myForm">
+        <input type="text" class="form-control" ng-value="txtBox" ng-model="txtBox" name="txtBox" placeholder="Username" required/>
+        </form>
+        <class="form-control" ng-if="!exists">Error: Player Not Found</class>
+    </div>
+    <div class="modal-footer">
+		<button class="btn btn-danger pull-left" type="button" ng-click="closeModal()"><i class="fa fa-times"></i> Cancel</button>
+        <button class="btn btn-success" type="button" ng-click="add(item)"ng-disabled="myForm.$invalid"></i> Add</button>
+    </div>>
+</script>
+
+<!-- Add player to a group -->
+
+<script type="text/ng-template" id="addGroupModal.html">
+    <div class="modal-header">
+        <h3 class="modal-title"><span>Join a new Group </span></h3>
+    </div>
+    <form name="myForm">
+        <div class="modal-body">
+            <class>Enter Group Name</class>
+            <input type="text" class="form-control" ng-value="txtBox" ng-model="txtBox" name="txtBox" placeholder="Group name" required/>
+            <class="form-control" ng-if="!exists">Error: Group Not Found</class>
+        </div>
+    </form>
+    <div class="modal-footer">
+		<button class="btn btn-danger pull-left" type="button" ng-click="closeModal()"><i class="fa fa-times"></i> Cancel</button>
+        <button class="btn btn-success" type="button" ng-click="add(item)" ng-disabled="myForm.$invalid">Join</button>
+    </div>>
+</script>
+
+<!-- Confirm that we want to delete the user  -->
+
+<script type="text/ng-template" id="confirmDeleteModal.html">
+	<div class="modal-header">
+		<h3 class="modal-title">You are deleting {{userName}}</h3>
+	</div>
+	<div class="modal-body">
+		Are you sure you want to delete the user {{userName}}?
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-danger pull-left" type="button" ng-click="closeModal()"><i class="fa fa-times"></i> No</button>
+		<button class="btn btn-success" type="button" ng-click="delete()"><i class="fa fa-trash-o"></i> Yes</button>
+	</div>
+</script>
